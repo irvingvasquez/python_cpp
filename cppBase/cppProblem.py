@@ -6,44 +6,30 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 '''
 
-from shapely.geometry import Polygon
-import matplotlib.pyplot as plt
-import matplotlib
-import numpy as np
-import cppBase.io as io
+from cppBase.cppRobot import cppRobot
+from cppBase.cppMap import cppMap
+import configparser
 
-def plotPolygons(polygons):
-    fig, ax = plt.subplots(1)
-    for element in polygons:
-        points = element.exterior.coords.xy
-        
-        points = np.transpose(points)
-        polygon_shape = matplotlib.patches.Polygon(points, linewidth=1, edgecolor='r', facecolor='none')
-        ax.add_patch(polygon_shape)
-        plt.axis("equal")
-    plt.show()
+class cppProblem():
+    def __init__(self, map, robot) -> None:
+        self.map = map
+        self.robot = robot
+        self.overlap = 0
+        self.initial_position = (0.0, 0.0)
+        self.final_position = (0.0, 0.0)
 
-
-def drawMap(map):
-    plotPolygons([map.getPolygon()])
-
-
-class cppMap():
-    def __init__(self, polygonal_map) -> None:
-        self.map = polygonal_map
-
-    def __init__(self) -> None:
-        self.map = Polygon()
-
-    def isConvex(self):
-        return True
-
-    def getPolygon(self):
-        return self.map
+    def setOverlap(self, overlap):
+        self.overlap = overlap
+    
+    def getLateralDelta(self):
+        #todo
+        return self.robot.getFootPrintMinRadius()
 
     def initializeFromFolder(self, folder):
+        ini_file = folder + "/cpp_problem.ini"
+        config = configparser.ConfigParser()
+        config.read(ini_file)
 
-        # load map shape
-        map_file = folder + "/map.csv"
-        self.map = io.loadPolygonFromCSV(map_file)
+        self.initial_position = (float(config['PROBLEM']['initial_position_x']), float(config['PROBLEM']['initial_position_y']))
+        self.final_position = (float(config['PROBLEM']['final_position_x']), float(config['PROBLEM']['final_position_y']))
 
