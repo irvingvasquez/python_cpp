@@ -9,7 +9,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 from cppBase.cppSolver import cppSolver
 from cppBase.cppProblem import cppProblem
 from shapely.geometry import Polygon, Point, LineString
-from shapely.geometry import LineString
+from shapely.geometry import LineString, LinearRing
 from geometricPlanners.cppGeometry import getNearestVertexToRing
 
 class contourPlanner(cppSolver):
@@ -17,7 +17,7 @@ class contourPlanner(cppSolver):
         super().__init__(problem)
 
     def plan(self):
-        remaining_contour =  LineString(Polygon(self.problem.map.getPolygon()).exterior.coords)
+        remaining_contour =  LinearRing(Polygon(self.problem.map.getPolygon()).exterior.coords)
         print(remaining_contour)
         # validate that the map is convex
 
@@ -32,14 +32,27 @@ class contourPlanner(cppSolver):
         # while the remaining map has a span bigger that the minimum radius
         # sinplified with the line lenght
         while remaining_contour.length > 0:
+            
+            # shift the contour to connect with the starting position
+            #print(remaining_contour.coords)
+            nv, md, n_idx = getNearestVertexToRing(init, remaining_contour)
+            #print(nv, n_idx)
+            shifted_coords = [coordinate for coordinate in remaining_contour.coords[n_idx:-1]]
+            for coordinate in remaining_contour.coords[:n_idx+1]:
+                shifted_coords.append(coordinate)
+            #print(shifted_coords)
+            remaining_contour = LinearRing(shifted_coords)
+
             # include the contour to the path
             for coordinate in remaining_contour.coords:
                 path_points.append(coordinate)
+
+            # offset
             remaining_contour = remaining_contour.parallel_offset(offset, 'left')
 
         path_points.append(self.problem.final_position)
 
-        print(path_points)
+        #print(path_points)
         path = LineString(path_points)
 
         return path
