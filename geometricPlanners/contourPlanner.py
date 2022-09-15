@@ -10,6 +10,7 @@ from cppBase.cppSolver import cppSolver
 from cppBase.cppProblem import cppProblem
 from shapely.geometry import Polygon, Point, LineString
 from shapely.geometry import LineString
+from geometricPlanners.cppGeometry import getNearestVertexToRing
 
 class contourPlanner(cppSolver):
     def __init__(self, problem) -> None:
@@ -20,19 +21,24 @@ class contourPlanner(cppSolver):
         print(remaining_contour)
         # validate that the map is convex
 
+        # add initial position
+        init = Point(self.problem.initial_position)
+        path_points = [self.problem.initial_position]
         
         # create inner contours
         offset = self.problem.getLateralDelta()
         remaining_contour = remaining_contour.parallel_offset(offset, 'left')
-
-        # while the remaining map has a span bigger that the minimum radius
-
-        init = Point(self.problem.initial_position)
-        path_points = [self.problem.initial_position]# + remaining_contour.coords
-        for coordinate in remaining_contour.coords:
-            path_points.append(coordinate)
-        path_points.append(self.problem.final_position)
         
+        # while the remaining map has a span bigger that the minimum radius
+        # sinplified with the line lenght
+        while remaining_contour.length > 0:
+            # include the contour to the path
+            for coordinate in remaining_contour.coords:
+                path_points.append(coordinate)
+            remaining_contour = remaining_contour.parallel_offset(offset, 'left')
+
+        path_points.append(self.problem.final_position)
+
         print(path_points)
         path = LineString(path_points)
 

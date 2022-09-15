@@ -23,3 +23,4 @@ def getNearestVertexToRing(vertex, ring):
             min_d = distance
             
     return nearest_vertex, min_d, n_idx
+

@@ -27,7 +27,7 @@ class cppRobot():
         return self.foot_print_min_radius
 
     def initializeFromFolder(self, folder):
-        ini_file = folder + "/cpp_problem.ini"
+        ini_file = folder + "cpp_problem.ini"
         config = configparser.ConfigParser()
         config.read(ini_file)
 
