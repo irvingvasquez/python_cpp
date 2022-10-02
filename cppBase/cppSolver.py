@@ -12,6 +12,6 @@ class cppSolver():
     def __init__(self, problem) -> None:
         self.problem = problem
     
-    def plan():
+    def plan(self):
         pass
 

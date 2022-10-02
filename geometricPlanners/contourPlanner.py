@@ -27,7 +27,8 @@ class contourPlanner(cppSolver):
         
         # create inner contours
         offset = self.problem.getLateralDelta()
-        remaining_contour = remaining_contour.parallel_offset(offset, 'left')
+        initial_offset = self.problem.getLateralWallDistance() 
+        remaining_contour = remaining_contour.parallel_offset(initial_offset, 'left')
         
         # while the remaining map has a span bigger that the minimum radius
         # sinplified with the line lenght

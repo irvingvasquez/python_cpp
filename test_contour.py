@@ -4,6 +4,7 @@ from shapely.geometry import Point, Polygon
 from cppBase.cppRobot import cppRobot
 from cppBase.cppProblem import cppProblem
 from geometricPlanners.contourPlanner import contourPlanner
+from cppBase.io import savePathAsCSV
 
 import matplotlib.pyplot as plt
 import sys, getopt
@@ -20,6 +21,8 @@ def main(argv):
         sys.exit(2)
 
     #folder = './data/convex_polygon_example/'
+    print("\nInstituto Politécnico Nacional")
+    print('Python based coverage path planning')
 
     for opt, arg in opts:
         if opt == '-h':
@@ -29,6 +32,10 @@ def main(argv):
             folder = arg
         else:
             sys.exit()
+
+    print('\n------- Configuration -------')
+    print('Folder: ', folder)
+
         
     mapota = cppMap()
     mapota.initializeFromFolder(folder)
@@ -51,6 +58,9 @@ def main(argv):
     plt.plot(*zip(*mapa_points))
     plt.plot(*zip(*points))
     plt.show()
+
+    outpath = folder + 'solution_path.csv'
+    savePathAsCSV(points, outpath)
     
 
 if __name__ == "__main__":

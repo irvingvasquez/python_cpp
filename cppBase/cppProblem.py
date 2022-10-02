@@ -17,13 +17,17 @@ class cppProblem():
         self.overlap = 0
         self.initial_position = (0.0, 0.0)
         self.final_position = (0.0, 0.0)
+        self.lateral_wall_distance = 0
 
     def setOverlap(self, overlap):
         self.overlap = overlap
+
+    def getLateralWallDistance(self):
+        return self.lateral_wall_distance
     
     def getLateralDelta(self):
         #todo
-        return self.robot.getFootPrintMinRadius()
+        return 2 * self.robot.getFootPrintMinRadius()
 
     def initializeFromFolder(self, folder):
         ini_file = folder + "cpp_problem.ini"
@@ -32,4 +36,4 @@ class cppProblem():
 
         self.initial_position = (float(config['PROBLEM']['initial_position_x']), float(config['PROBLEM']['initial_position_y']))
         self.final_position = (float(config['PROBLEM']['final_position_x']), float(config['PROBLEM']['final_position_y']))
-
+        self.lateral_wall_distance = float(config['PROBLEM']['lateral_wall_distance'])
