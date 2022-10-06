@@ -33,7 +33,15 @@ class cppProblem():
         ini_file = folder + "cpp_problem.ini"
         config = configparser.ConfigParser()
         config.read(ini_file)
+        print("--- Problem configuration ---")
 
         self.initial_position = (float(config['PROBLEM']['initial_position_x']), float(config['PROBLEM']['initial_position_y']))
+        print("Initial position:", self.initial_position)
         self.final_position = (float(config['PROBLEM']['final_position_x']), float(config['PROBLEM']['final_position_y']))
+        print("Final position:", self.final_position)
         self.lateral_wall_distance = float(config['PROBLEM']['lateral_wall_distance'])
+        print("Wall lateral distance:", self.lateral_wall_distance)
+
+        print("Overlap:", self.overlap)
+        
+        print("Lateral delta: ", self.getLateralDelta())

@@ -49,7 +49,7 @@ def main(argv):
     problema = cppProblem(mapota, robot)
     problema.initializeFromFolder(folder)
 
-    planner = contourPlanner(problema)
+    planner = contourPlanner(problema, verbose=True)
 
     path = planner.plan()
 

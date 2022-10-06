@@ -22,6 +22,6 @@ def savePathAsCSV(path, file_path):
 
         for position in path:
             row = [str(position[0]), str(position[1])]
-            print(row)
+            #print(row)
             writer.writerow(row)
 

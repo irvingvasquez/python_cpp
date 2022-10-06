@@ -31,8 +31,10 @@ class cppRobot():
         config = configparser.ConfigParser()
         config.read(ini_file)
 
-        self.foot_print_min_radius = float(config['ROBOT']['foot_print_min_radius'])
+        print("--- Robot configuration ---")
 
+        self.foot_print_min_radius = float(config['ROBOT']['foot_print_min_radius'])
+        print("Robot footprint min radius: ", self.foot_print_min_radius)
 
         # TODO
         # load map shape

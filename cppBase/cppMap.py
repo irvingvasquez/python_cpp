@@ -42,8 +42,9 @@ class cppMap():
         return self.map
 
     def initializeFromFolder(self, folder):
-
+        print("--- Map configuration ---")
         # load map shape
         map_file = folder + "map.csv"
+        print("Map file: ", map_file)
         self.map = io.loadPolygonFromCSV(map_file)
 
