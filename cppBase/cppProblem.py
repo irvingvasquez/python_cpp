@@ -9,14 +9,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 from cppBase.cppRobot import cppRobot
 from cppBase.cppMap import cppMap
 import configparser
+import numpy as np
 
 class cppProblem():
     def __init__(self, map, robot) -> None:
         self.map = map
         self.robot = robot
         self.overlap = 0
-        self.initial_position = (0.0, 0.0)
-        self.final_position = (0.0, 0.0)
+        self.initial_position = np.array([0.0, 0.0])
+        self.final_position = np.array([0.0, 0.0])
         self.lateral_wall_distance = 0
 
     def setOverlap(self, overlap):
@@ -35,9 +36,9 @@ class cppProblem():
         config.read(ini_file)
         print("--- Problem configuration ---")
 
-        self.initial_position = (float(config['PROBLEM']['initial_position_x']), float(config['PROBLEM']['initial_position_y']))
+        self.initial_position = np.array( [float(config['PROBLEM']['initial_position_x']), float(config['PROBLEM']['initial_position_y'])] )
         print("Initial position:", self.initial_position)
-        self.final_position = (float(config['PROBLEM']['final_position_x']), float(config['PROBLEM']['final_position_y']))
+        self.final_position = np.array( [float(config['PROBLEM']['final_position_x']), float(config['PROBLEM']['final_position_y'])] )
         print("Final position:", self.final_position)
         self.lateral_wall_distance = float(config['PROBLEM']['lateral_wall_distance'])
         print("Wall lateral distance:", self.lateral_wall_distance)

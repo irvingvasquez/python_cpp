@@ -4,12 +4,13 @@ from shapely.geometry import Point, Polygon
 from cppBase.cppRobot import cppRobot
 from cppBase.cppProblem import cppProblem
 from geometricPlanners.contourPlanner import contourPlanner
+from geometricPlanners.cppDisjointPlanner import cppDisjointPlanner
 from cppBase.io import savePathAsCSV
 import cppBase.cppDrawHelper as dw
 
 import matplotlib.pyplot as plt
 import sys, getopt
-import time
+import numpy as np
 
 def main(argv):
     if len(argv)==0:
@@ -51,30 +52,20 @@ def main(argv):
     problema = cppProblem(mapota, robot)
     problema.initializeFromFolder(folder)
 
-    planner = contourPlanner(problema, verbose=True)
+    planner = cppDisjointPlanner(problema, verbose=True)
+    planner.initializeFromFolder(folder)
 
-    #plt.plot(*zip(*mapa_points))
-    #plt.plot(*zip(*points))
-    #plt.show()
-    #dw.drawProblem(problema)
-
-    start = time.time()
     path = planner.plan()
-    end = time.time()
+    print("distance:", path.length)
 
-    total_time = end - start
-    print("Processing time: "+ str(total_time))
-
-    points = path.coords
-    
-    #plt.plot(*zip(*mapa_points))
-    #plt.plot(*zip(*points))
-    #plt.show()
     dw.drawSolution(problema, path)
 
     outpath = folder + 'solution_path.csv'
-    savePathAsCSV(points, outpath)
-    
+    savePathAsCSV(path.coords, outpath)
+
+    outpath = folder + 'distance.csv'
+    np.savetxt(outpath, np.array([path.length]), delimiter=',')
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])

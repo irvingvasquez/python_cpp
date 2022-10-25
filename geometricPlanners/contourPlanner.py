@@ -41,19 +41,21 @@ class contourPlanner(cppSolver):
         if initial_offset > 0: # validation
             remaining_contour = polygon_contour.parallel_offset(initial_offset, erosion_side)
             if remaining_contour.length > initial_lenght:
-                erosion_side = 'right'
-                remaining_contour = polygon_contour.parallel_offset(initial_offset, erosion_side)
                 print('Contour Planner Warning: polygon defined clock-wise')
+                #erosion_side = 'right'
+                remaining_contour = polygon_contour.parallel_offset(initial_offset, 'right')
         else:
             remaining_contour = polygon_contour
             # test if polygon is defined counterclockwise
-            temp_contour = polygon_contour.parallel_offset(initial_offset, erosion_side)
-            if temp_contour.length > initial_lenght:
-                erosion_side = 'right'
-                print('Contour Planner Warning: polygon defined clock-wise')
+            #temp_contour = polygon_contour.parallel_offset(initial_offset, erosion_side)
+            #if temp_contour.length > initial_lenght:
+            #    #erosion_side = 'right'
+            #    print('Contour Planner Warning: polygon defined clock-wise')
 
         if self.verbose:
             print("Target contour: ", remaining_contour)
+
+        current_lenght = remaining_contour.length
 
         # while the remaining map has a span bigger that the minimum radius
         # sinplified with the line lenght
@@ -75,6 +77,12 @@ class contourPlanner(cppSolver):
 
             # offset
             remaining_contour = remaining_contour.parallel_offset(offset, erosion_side)
+            if remaining_contour.length > current_lenght:
+                print('Contour Planner Warning: polygon defined clock-wise')
+                #erosion_side = 'right'
+                remaining_contour = polygon_contour.parallel_offset(initial_offset, 'right')
+
+            current_lenght = remaining_contour.length
 
         path_points.append(self.problem.final_position)
 

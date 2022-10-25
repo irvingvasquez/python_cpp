@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
 import cppBase.io as io
+import configparser
 
 def plotPolygons(polygons):
     fig, ax = plt.subplots(1)
@@ -31,12 +32,22 @@ def drawMap(map):
 class cppMap():
     def __init__(self, polygonal_map) -> None:
         self.map = polygonal_map
+        self.initialized = False
+        self.is_convex = False
+        self.has_holes = False
+        self.num_holes = 0
+        self.holes = []
 
     def __init__(self) -> None:
         self.map = Polygon()
+        self.initialized = False
+        self.is_convex = False
+        self.has_holes = False
+        self.num_holes = 0
+        self.holes = []
 
     def isConvex(self):
-        return True
+        return self.is_convex
 
     def getPolygon(self):
         return self.map
@@ -47,4 +58,31 @@ class cppMap():
         map_file = folder + "map.csv"
         print("Map file: ", map_file)
         self.map = io.loadPolygonFromCSV(map_file)
+
+        ini_file = folder + "cpp_problem.ini"
+        config = configparser.ConfigParser()
+        try:
+            config.read(ini_file)
+        except:
+            print("Error reading file")
+            exit(0)
+
+        self.is_convex = bool(config['MAP']['is_convex'])
+        print("Is convex: ", self.is_convex)
+        #self.is_convex = bool(config['MAP']['is_convex'])
+        #print("Has holes: ", self.has_holes)
+        self.has_holes = bool(config['MAP']['has_holes'])
+        print("Has holes: ", self.has_holes)
+
+        if self.has_holes:
+            self.num_holes = int(config['MAP']['num_holes'])
+            print("Number of holes: ", self.num_holes)
+
+            for i in range(self.num_holes):
+                hole_file = folder + "hole_" + str(i) + ".csv"
+                print("Hole file: ", hole_file)
+                temp_poly = io.loadPolygonFromCSV(hole_file)
+                self.holes.append(temp_poly)
+
+        self.initialized = True
 
